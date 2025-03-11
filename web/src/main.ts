@@ -3,6 +3,7 @@ import Graph from "graphology";
 import { parse } from "graphology-gexf/browser";
 import Sigma from "sigma";
 import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
+import { EdgeArrowProgram } from "sigma/rendering";
 import Fuse from "fuse.js";
 
 // Load external GEXF file:
@@ -27,6 +28,10 @@ fetch("./graph.gexf")
     minCameraRatio: 0.08,
     maxCameraRatio: 3,
     labelRenderedSizeThreshold: 3,
+    defaultEdgeType: "straightArrow",
+    edgeProgramClasses: {
+      straightArrow: EdgeArrowProgram,
+    },
   });
   const camera = renderer.getCamera();
 
