@@ -7,3 +7,6 @@
 *.graphml
 *.gexf
 *.png
+
+# workspace
+.vscode/

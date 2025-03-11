@@ -1,6 +1,6 @@
 # biocgraph
 
-Visualizing package dependencies within the [Bioconductor](https://bioconductor.org/) universe.
+Visualizing package dependencies within the [Bioconductor](https://bioconductor.org/) universe. [See a live version here!](https://leonzong.com/biocgraph/)
 
 ## to-dos
 
