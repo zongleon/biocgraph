@@ -1,0 +1,21 @@
+{
+  "name": "web",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "~5.7.2",
+    "vite": "^6.2.0"
+  },
+  "dependencies": {
+    "fuse.js": "^7.1.0",
+    "graphology": "^0.26.0",
+    "graphology-gexf": "^0.13.2",
+    "sigma": "^3.0.1"
+  }
+}
