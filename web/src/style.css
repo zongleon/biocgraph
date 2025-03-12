@@ -1,4 +1,4 @@
-/* :root {
+:root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -11,11 +11,15 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-} */
 
-body {
-  font-family: sans-serif;
+  /* New theme variables for dark mode */
+  --sidebar-bg: #333;
+  --close-btn-color: #ccc;
+  --label-bg: #000;
+  --label-color: #fff;
+  --btn-bg: #444;
 }
+
 html,
 body,
 #storybook-root,
@@ -37,14 +41,25 @@ body,
 #node-sidebar {
   position: fixed;
   left: 0;
-  top: 0;
+  bottom: 0;
   width: 320px;
   flex-wrap: wrap;
   height: 100vh;
   overflow-y: auto;
-  background-color: #f0f0f0;
+  background-color: var(--sidebar-bg);
   padding: 1em;
   display: none;
+}
+
+#node-sidebar .close-btn {
+  position: absolute;
+  top: 2em;
+  right: 2em;
+  background: none;
+  border: none;
+  font-size: 1.2em;
+  cursor: pointer;
+  color: var(--close-btn-color);
 }
 
 .input {
@@ -60,8 +75,8 @@ body,
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background: black;
-  color: white;
+  background: var(--label-bg);
+  color: var(--label-color);
   padding: 0.2em;
   border-radius: 2px;
   margin-top: 0.3em;
@@ -73,7 +88,7 @@ body,
   height: 2.5em;
   display: inline-block;
   text-align: center;
-  background: white;
+  background: var(--btn-bg);
   outline: none;
   border: 1px solid dimgrey;
   border-radius: 2px;
@@ -93,14 +108,38 @@ input[type="search"]:focus {
   box-shadow: 0 0 5px rgba(102, 175, 233, 0.5);
 }
 
+/* Add resizer styles for #node-sidebar */
+@media (min-width: 601px) {
+  #sidebar-resizer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 5px;
+    height: 100%;
+    cursor: ew-resize;
+    background: transparent;
+  }
+}
+@media (max-width: 600px) {
+  #sidebar-resizer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    cursor: ns-resize;
+    background: transparent;
+  }
+}
+
 /* Responsive adjustments for mobile */
 @media (max-width: 600px) {
   #node-sidebar {
     position: fixed;
     bottom: 0;
     left: 0;
-    width: 100%;
-    height: auto;
+    width: 100vw;
+    height: 220px;
     display: none;
   }
 }
@@ -109,5 +148,9 @@ input[type="search"]:focus {
   :root {
     color: #213547;
     background-color: #ffffff;
+    /* Override theme variables for light mode */
+    --sidebar-bg: #f0f0f0;
+    --close-btn-color: #333;
+    --btn-bg: white;
   }
 }
