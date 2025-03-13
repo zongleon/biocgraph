@@ -51,6 +51,7 @@ def parse_html(html):
     # Parse table rows to get Version, In Bioconductor since, Imports, and URL.
     version = ""
     bioc_since = ""
+    depends = ""
     imports = ""
     pkg_url = ""
     suggests = ""
@@ -64,6 +65,8 @@ def parse_html(html):
                 version = value
             elif key == "In Bioconductor since":
                 bioc_since = value
+            elif key == "Depends":
+                depends = value
             elif key == "Imports":
                 imports = value
             elif key == "URL":
@@ -74,6 +77,7 @@ def parse_html(html):
                 biocViews = value
     data["Version"] = version
     data["In Bioconductor since"] = bioc_since
+    data["Depends"] = depends
     data["Imports"] = imports
     data["URL"] = pkg_url
     data["Suggests"] = suggests
@@ -117,8 +121,13 @@ def process_package(pkg):
     result = {"Package": pkg}
     html_url = f"https://www.bioconductor.org/packages/release/bioc/html/{pkg}.html"
     stats_url = f"https://bioconductor.org/packages/stats/bioc/{pkg}/{pkg}_stats.tab"
-
+    
     html_text = fetch_url(html_url)
+    if not html_text:
+        # If the initial URL returns a 404, try the alternate URL.
+        alt_html_url = f"http://bioconductor.org/packages/release/data/annotation/html/{pkg}.html"
+        html_text = fetch_url(alt_html_url)
+        
     if html_text:
         pkg_data = parse_html(html_text)
         result.update(pkg_data)
@@ -129,6 +138,7 @@ def process_package(pkg):
             "Description": "",
             "Version": "",
             "In Bioconductor since": "",
+            "Depends": "",
             "Imports": "",
             "Suggests": "",
             "biocViews": "",
