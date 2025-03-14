@@ -2,22 +2,31 @@
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
+  /* Updated light mode defaults */
+  color: #213547;
+  background-color: #ffffff;
+  /* Light mode theme variables */
+  --sidebar-bg: #f0f0f0;
+  --close-btn-color: #333;
+  --label-bg: #aaa;
+  --label-color: #000;
+  --btn-bg: white;
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  /* New theme variables for dark mode */
-  --sidebar-bg: #333;
-  --close-btn-color: #ccc;
-  --label-bg: #000;
-  --label-color: #fff;
-  --btn-bg: #444;
+  /* New CSS variables for control buttons in light mode */
+  --control-btn-bg: #fff;
+  --control-btn-border: 1px solid #ccc;
+  --control-btn-color: #213547;
+  --control-btn-hover-bg: #f0f0f0;
+  /* New CSS variables for search input in light mode */
+  --search-input-bg: #fff;
+  --search-input-border: 1px solid #ccc;
+  --search-input-color: #213547;
+  --search-input-focus-border: #66afe9;
+  --search-input-focus-shadow: 0 0 5px rgba(102, 175, 233, 0.5);
 }
 
 html,
@@ -67,9 +76,11 @@ body,
   display: inline-block;
   vertical-align: middle;
 }
+
 .input:not(:hover) label {
   display: none;
 }
+
 .input label {
   position: absolute;
   top: 100%;
@@ -88,24 +99,33 @@ body,
   height: 2.5em;
   display: inline-block;
   text-align: center;
-  background: var(--btn-bg);
+  background: var(--control-btn-bg);       /* Updated to use CSS variable */
   outline: none;
-  border: 1px solid dimgrey;
+  border: var(--control-btn-border);       /* Updated to use CSS variable */
+  color: var(--control-btn-color);          /* Updated to use CSS variable */
   border-radius: 2px;
   cursor: pointer;
+  transition: background-color 0.3s ease;   /* Added transition */
+}
+/* Removed previous light mode overrides */
+
+.input button:hover {
+  background-color: var(--control-btn-hover-bg);  /* Use hover variable */
 }
 
 input[type="search"] {
+  background-color: var(--search-input-bg);
+  border: var(--search-input-border);
+  color: var(--search-input-color);
   padding: 0.5em 1em;
   margin-top: 1em; 
-  border: 1px solid #ccc;
   border-radius: 4px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 input[type="search"]:focus {
   outline: none;
-  border-color: #66afe9;
-  box-shadow: 0 0 5px rgba(102, 175, 233, 0.5);
+  border-color: var(--search-input-focus-border);
+  box-shadow: var(--search-input-focus-shadow);
 }
 
 /* Add resizer styles for #node-sidebar */
@@ -144,13 +164,23 @@ input[type="search"]:focus {
   }
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-    /* Override theme variables for light mode */
-    --sidebar-bg: #f0f0f0;
-    --close-btn-color: #333;
-    --btn-bg: white;
-  }
+body.dark-mode {
+  background-color: #666666;
+  color: #ffffff;
+  --sidebar-bg: #333;
+  --close-btn-color: #ccc;
+  --btn-bg: #444;
+
+  --label-bg: #000;
+  --label-color: #fff;
+  /* Override control button variables for dark mode */
+  --control-btn-bg: var(--btn-bg);
+  --control-btn-border: 1px solid dimgrey;
+  --control-btn-color: #ffffff;
+  /* Override search input variables for dark mode */
+  --search-input-bg: #555;
+  --search-input-border: 1px solid #888;
+  --search-input-color: #ffffff;
+  --search-input-focus-border: #88c;
+  --search-input-focus-shadow: 0 0 5px rgba(136, 204, 255, 0.5);
 }

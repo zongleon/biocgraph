@@ -28,6 +28,23 @@ const sidebar = document.getElementById("node-sidebar") as HTMLDivElement;
 // get user dark mode pref
 let darkmode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
+if (darkmode) {
+  // User prefers dark mode
+  document.body.classList.add('dark-mode');
+} else {
+  // User prefers light mode or has no preference
+  document.body.classList.remove('dark-mode');
+}
+
+// Add dark mode toggle functionality:
+const darkModeToggleBtn = document.getElementById("dark-mode-toggle") as HTMLButtonElement;
+darkModeToggleBtn.addEventListener("click", () => {
+	darkmode = !darkmode;
+	document.body.classList.toggle("dark-mode", darkmode);
+	// Refresh sigma to update node colors based on new darkmode
+	renderer.refresh({ skipIndexation: true });
+});
+
 // Load external GEXF file:
 const res = await fetch("./graph.gexf");
 const gexf = await res.text();
@@ -39,9 +56,6 @@ const graph = parse(Graph, gexf);
 const renderer = new Sigma(graph, container, {
   minCameraRatio: 0.08,
   maxCameraRatio: 3,
-  labelColor: {
-    color: darkmode ? "#fff" : "#000",
-  },
   labelRenderedSizeThreshold: 3,
   defaultEdgeType: "straightArrow",
   edgeProgramClasses: {
