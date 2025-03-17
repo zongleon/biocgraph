@@ -283,7 +283,10 @@ function makeSidebar(sidebar: HTMLElement) {
   const description = graph.getNodeAttribute(state.selectedNode, "Description");
   const uniqueIPs = graph.getNodeAttribute(state.selectedNode, "Unique_IPs_2024");
   const biocViews = graph.getNodeAttribute(state.selectedNode, "biocViews");
-  const url = graph.getNodeAttribute(state.selectedNode, "URL");
+  // there may be multiple urls (whitespace-separated)
+  // we'll display up to 3 in a tags
+  const urls = graph.getNodeAttribute(state.selectedNode, "URL")?.split(/\s+/) as string[];
+  const url = urls?.slice(0, 3).map((u) => `<a target="_blank" rel="noopener noreferrer" href="${u.trim()}">${u.trim()}</a>`).join("<br/>");
   const doi = graph.getNodeAttribute(state.selectedNode, "DOI");
   const authors = graph.getNodeAttribute(state.selectedNode, "Authors");
   
@@ -308,7 +311,7 @@ function makeSidebar(sidebar: HTMLElement) {
         <li><strong>Unique_IPs_2024:</strong> ${uniqueIPs}</li>
         <li><strong>biocViews:</strong> ${biocViews}</li>
         <li><strong>URL:</strong> ${url}</li>
-        <li><strong>DOI:</strong> ${doi}</li>
+        <li><strong>DOI:</strong> <a target="_blank" rel="noopener noreferrer" href="https://doi.org/${doi}">${doi}</a></li>
         <li><strong>Authors:</strong> ${authors}</li>
       </ul>`;
   }
