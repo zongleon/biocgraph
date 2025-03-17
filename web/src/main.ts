@@ -13,6 +13,9 @@ interface State {
   selectedNode?: string;
   suggestions?: Set<string>;
   selectedNeighbors?: Set<string>;
+
+  // filter state
+  biocTypeFilter?: string;
 }
 
 // Retrieve some useful DOM elements:
@@ -24,6 +27,8 @@ const labelsThresholdRange = document.getElementById("labels-threshold") as HTML
 const searchInput = document.getElementById("search-input") as HTMLInputElement;
 const searchSuggestions = document.getElementById("suggestions") as HTMLDataListElement;
 const sidebar = document.getElementById("node-sidebar") as HTMLDivElement;
+const biocFilter = document.getElementById("filter-input") as HTMLSelectElement;
+const biocFilterSuggestions = document.getElementById("filter-suggestions") as HTMLDataListElement;
 
 // get user dark mode pref
 let darkmode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -92,11 +97,11 @@ searchSuggestions.innerHTML = graph
 .map((node) => `<option value="${graph.getNodeAttribute(node, "label")}"></option>`)
 .join("\n");
 
-// Initialize Fuse.js
+// initialize fuse for search
 const nodes = graph.nodes().map((n) => ({ id: n, label: graph.getNodeAttribute(n, "label") as string }));
 const fuse = new Fuse(nodes, {
   keys: ["label"],
-  threshold: 0.3, // Adjust the threshold as needed
+  threshold: 0.3,
 });
 
 // Bind search input interactions:
@@ -105,6 +110,29 @@ searchInput.addEventListener("input", () => {
 });
 searchInput.addEventListener("blur", () => {
   setSearchQuery("");
+});
+
+// initialize filter options
+// biocViews are in the biocViews attribute and are comma separated
+const biocViews = new Set<string>();
+const noBiocViewLabel = "No biocViews";
+const onlyBiocViews = "Has biocViews";
+biocViews.add("---");
+biocViews.add(noBiocViewLabel);
+biocViews.add(onlyBiocViews);
+graph.nodes().forEach((node) => {
+  const views = graph.getNodeAttribute(node, "biocViews") as string;
+  if (views === undefined) return;
+  views.split(",").forEach((view) => biocViews.add(view.trim()));
+});
+// feed filter input with suggestinos
+biocFilterSuggestions.innerHTML = Array.from(biocViews)
+  .map((view) => `<option value="${view}"></option>`)
+  .join("\n");
+
+// bind filter interactions
+biocFilter.addEventListener("change", () => {
+  filterNodes(biocFilter.value);
 });
 
 // Bind graph interactions:
@@ -138,6 +166,21 @@ renderer.setSetting("nodeReducer", (node, data) => {
     } else {
       res.label = "";
       res.color = color;
+    }
+  }
+
+  // filter by biocView
+  if (state.biocTypeFilter) {
+    if (state.biocTypeFilter === noBiocViewLabel) {
+      if (graph.getNodeAttribute(node, "biocViews") !== undefined) {
+        res.hidden = true;
+      }
+    } else if (state.biocTypeFilter === onlyBiocViews) {
+      if (graph.getNodeAttribute(node, "biocViews") === undefined) {
+        res.hidden = true;
+      }
+    } else if (!graph.getNodeAttribute(node, "biocViews")?.includes(state.biocTypeFilter)) {
+        res.hidden = true; 
     }
   }
 
@@ -310,4 +353,12 @@ function makeSidebar(sidebar: HTMLElement) {
       document.addEventListener("mouseup", mouseUpHandler);
     });
   }
+}
+
+function filterNodes(filter: string) {
+  state.biocTypeFilter = filter;
+  if (state.biocTypeFilter === "---") {
+    state.biocTypeFilter = undefined;
+  }
+  renderer.refresh({ skipIndexation: true });
 }
